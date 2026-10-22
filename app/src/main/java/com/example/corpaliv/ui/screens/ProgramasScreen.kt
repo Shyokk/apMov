@@ -1,34 +1,44 @@
 package com.example.corpaliv.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.corpaliv.data.DatosCorpaliv
+import com.example.corpaliv.ui.components.BotonColaborar
+import com.example.corpaliv.ui.components.TarjetaInfo
 
 @Composable
 fun ProgramasScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onColaborar: () -> Unit
 ) {
-    Column(
-        modifier = modifier.fillMaxSize().padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            text = "Programas",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Text(
-            text = "Aquí irán los programas de inclusión laboral.",
-            textAlign = TextAlign.Center
-        )
+        item {
+            Text(
+                text = "Estos son los programas de inclusión de CORPALIV y Alba Lab.",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+        items(DatosCorpaliv.programas) { programa ->
+            TarjetaInfo(
+                titulo = programa.nombre,
+                descripcion = programa.descripcion,
+                detalle = "Para: ${programa.dirigidoA}"
+            )
+        }
+        item {
+            BotonColaborar(onClick = onColaborar)
+        }
     }
 }

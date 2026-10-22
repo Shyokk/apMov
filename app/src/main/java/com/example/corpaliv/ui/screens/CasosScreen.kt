@@ -1,34 +1,48 @@
 package com.example.corpaliv.ui.screens
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.example.corpaliv.data.DatosCorpaliv
+import com.example.corpaliv.ui.components.BotonColaborar
+import com.example.corpaliv.ui.components.TarjetaInfo
 
 @Composable
 fun CasosScreen(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onColaborar: () -> Unit
 ) {
-    Column(
-        modifier = modifier.fillMaxSize().padding(24.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp),
+        verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
-        Text(
-            text = "Casos de éxito",
-            style = MaterialTheme.typography.headlineMedium,
-            color = MaterialTheme.colorScheme.primary
-        )
-        Text(
-            text = "Aquí irán los casos de éxito e indicadores.",
-            textAlign = TextAlign.Center
-        )
+        item {
+            Text(
+                text = "Historias de lo que se logra cuando colaboras.",
+                style = MaterialTheme.typography.bodyLarge
+            )
+        }
+        items(DatosCorpaliv.casos) { caso ->
+            TarjetaInfo(
+                titulo = caso.titulo,
+                descripcion = caso.historia,
+                detalle = "Resultado: ${caso.resultado}"
+            )
+        }
+        item {
+            Text(
+                text = "* Casos de ejemplo, sin nombres reales",
+                style = MaterialTheme.typography.bodySmall
+            )
+            BotonColaborar(onClick = onColaborar)
+        }
     }
 }

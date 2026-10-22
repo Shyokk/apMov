@@ -42,11 +42,13 @@ fun App() {
             }
         ) { innerPadding ->
             val modifier = Modifier.padding(innerPadding)
+            // el boton "Quiero colaborar" de las pantallas lleva al formulario
+            val irAColaborar = { pantallaActual = "Quiero colaborar" }
             when (pantallaActual) {
-                "Inicio" -> InicioScreen(modifier)
-                "Programas" -> ProgramasScreen(modifier)
-                "Productos" -> ProductosScreen(modifier)
-                "Casos de éxito" -> CasosScreen(modifier)
+                "Inicio" -> InicioScreen(modifier, irAColaborar)
+                "Programas" -> ProgramasScreen(modifier, irAColaborar)
+                "Productos" -> ProductosScreen(modifier, irAColaborar)
+                "Casos de éxito" -> CasosScreen(modifier, irAColaborar)
                 "Quiero colaborar" -> ColaborarScreen(modifier)
                 "Registros" -> RegistrosScreen(modifier)
             }
