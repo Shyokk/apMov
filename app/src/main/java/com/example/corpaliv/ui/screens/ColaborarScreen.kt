@@ -48,17 +48,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.corpaliv.ui.components.CampoTexto
 import com.example.corpaliv.ui.components.MensajeError
+import com.example.corpaliv.ui.components.formatearFecha
 import com.example.corpaliv.viewmodel.ColaborarViewModel
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
+import com.example.corpaliv.viewmodel.RegistrosViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ColaborarScreen(
     modifier: Modifier = Modifier,
-    viewModel: ColaborarViewModel = viewModel()
+    viewModel: ColaborarViewModel = viewModel(),
+    registrosViewModel: RegistrosViewModel = viewModel()
 ) {
     val formulario by viewModel.formulario.collectAsState()
     val errores by viewModel.errores.collectAsState()
@@ -67,11 +66,9 @@ fun ColaborarScreen(
     var mostrarCalendario by remember { mutableStateOf(false) }
     var tipoAbierto by remember { mutableStateOf(false) }
 
-    // el calendario entrega la fecha en UTC, por eso se formatea en UTC
-    val formatoFecha = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-    formatoFecha.timeZone = TimeZone.getTimeZone("UTC")
+    // el calendario entrega la fecha en UTC, formatearFecha la pasa a texto
     val fechaTexto = if (formulario.fecha != null) {
-        formatoFecha.format(Date(formulario.fecha!!))
+        formatearFecha(formulario.fecha!!)
     } else {
         ""
     }
@@ -224,7 +221,13 @@ fun ColaborarScreen(
 
         Spacer(modifier = Modifier.height(8.dp))
         Button(
-            onClick = { viewModel.enviar() },
+            onClick = {
+                // uno valida (ColaborarViewModel) y el otro guarda en Room (RegistrosViewModel)
+                val datos = viewModel.enviar()
+                if (datos != null) {
+                    registrosViewModel.guardar(datos)
+                }
+            },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp)

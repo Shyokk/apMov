@@ -149,15 +149,17 @@ class ColaborarViewModel : ViewModel() {
         return nuevosErrores == ErroresColaboracion()
     }
 
-    fun enviar(): Boolean {
+    // si todo esta bien devuelve los datos para guardarlos y limpia el formulario
+    // si hay errores devuelve null
+    fun enviar(): Colaboracion? {
         if (!validarFormulario()) {
             _enviado.value = false
-            return false
+            return null
         }
-        // por ahora solo se limpia el formulario, en la siguiente etapa se guarda en Room
+        val datos = _formulario.value
         _formulario.value = Colaboracion()
         _enviado.value = true
-        return true
+        return datos
     }
 
     fun ocultarMensajeEnviado() {

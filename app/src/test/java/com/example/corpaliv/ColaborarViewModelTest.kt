@@ -2,7 +2,6 @@ package com.example.corpaliv
 
 import com.example.corpaliv.viewmodel.ColaborarViewModel
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -26,7 +25,7 @@ class ColaborarViewModelTest {
     @Test
     fun formularioVacioMuestraErrores() {
         val viewModel = ColaborarViewModel()
-        assertFalse(viewModel.enviar())
+        assertNull(viewModel.enviar())
         val errores = viewModel.errores.value
         assertNotNull(errores.nombre)
         assertNotNull(errores.correo)
@@ -39,7 +38,8 @@ class ColaborarViewModelTest {
     @Test
     fun formularioValidoSeEnviaYSeLimpia() {
         val viewModel = formularioValido()
-        assertTrue(viewModel.enviar())
+        val datos = viewModel.enviar()
+        assertEquals("Empresa Ejemplo", datos?.nombre)
         assertTrue(viewModel.enviado.value)
         assertEquals("", viewModel.formulario.value.nombre)
     }
@@ -48,7 +48,7 @@ class ColaborarViewModelTest {
     fun correoSinArrobaEsInvalido() {
         val viewModel = formularioValido()
         viewModel.actualizarCorreo("contacto.ejemplo.cl")
-        assertFalse(viewModel.enviar())
+        assertNull(viewModel.enviar())
         assertNotNull(viewModel.errores.value.correo)
     }
 
@@ -58,7 +58,7 @@ class ColaborarViewModelTest {
         viewModel.actualizarTelefono("91234abc")
         assertEquals("912345678", viewModel.formulario.value.telefono)
         viewModel.actualizarTelefono("91234")
-        assertFalse(viewModel.enviar())
+        assertNull(viewModel.enviar())
         assertNotNull(viewModel.errores.value.telefono)
     }
 
@@ -67,16 +67,16 @@ class ColaborarViewModelTest {
         val viewModel = formularioValido()
         viewModel.actualizarTipo("Donación")
         viewModel.actualizarMonto("500")
-        assertFalse(viewModel.enviar())
+        assertNull(viewModel.enviar())
         assertNotNull(viewModel.errores.value.monto)
         viewModel.actualizarMonto("5000")
-        assertTrue(viewModel.enviar())
+        assertNotNull(viewModel.enviar())
     }
 
     @Test
     fun voluntariadoNoPideMonto() {
         val viewModel = formularioValido()
-        assertTrue(viewModel.enviar())
+        assertNotNull(viewModel.enviar())
         assertNull(viewModel.errores.value.monto)
     }
 
@@ -85,7 +85,7 @@ class ColaborarViewModelTest {
         val viewModel = formularioValido()
         val haceTresDias = System.currentTimeMillis() - 3 * 24 * 60 * 60 * 1000L
         viewModel.actualizarFecha(haceTresDias)
-        assertFalse(viewModel.enviar())
+        assertNull(viewModel.enviar())
         assertNotNull(viewModel.errores.value.fecha)
     }
 
