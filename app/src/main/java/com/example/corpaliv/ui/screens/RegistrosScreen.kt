@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Card
@@ -39,49 +40,72 @@ import com.example.corpaliv.viewmodel.RegistrosViewModel
 @Composable
 fun RegistrosScreen(
     modifier: Modifier = Modifier,
+    nombreUsuario: String,
+    onCerrarSesion: () -> Unit,
     viewModel: RegistrosViewModel = viewModel()
 ) {
     val registros by viewModel.registros.collectAsState(initial = emptyList())
     // cuantos faltan por contactar (filter + size, como en colecciones)
     val pendientes = registros.filter { !it.contactado }.size
 
-    if (registros.isEmpty()) {
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+    Column(modifier = modifier.fillMaxSize()) {
+        // saludo y boton para cerrar sesion
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "Todavía no hay registros",
-                style = MaterialTheme.typography.titleLarge,
-                color = MaterialTheme.colorScheme.primary
+                text = "Hola, $nombreUsuario",
+                style = MaterialTheme.typography.titleMedium
             )
-            Text(
-                text = "Cuando alguien envíe el formulario \"Quiero colaborar\" va a aparecer aquí.",
-                textAlign = TextAlign.Center
-            )
+            TextButton(onClick = onCerrarSesion) {
+                Icon(imageVector = Icons.AutoMirrored.Filled.ExitToApp, contentDescription = null)
+                Spacer(modifier = Modifier.width(4.dp))
+                Text("Cerrar sesión")
+            }
         }
-    } else {
-        LazyColumn(
-            modifier = modifier.fillMaxSize(),
-            contentPadding = PaddingValues(16.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            item {
+
+        if (registros.isEmpty()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
                 Text(
-                    text = "${registros.size} registros · $pendientes por contactar",
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold
+                    text = "Todavía no hay registros",
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    text = "Cuando alguien envíe el formulario \"Quiero colaborar\" va a aparecer aquí.",
+                    textAlign = TextAlign.Center
                 )
             }
-            items(registros, key = { it.id }) { registro ->
-                TarjetaRegistro(
-                    registro = registro,
-                    onCambiarContactado = { viewModel.cambiarContactado(registro) },
-                    onEliminar = { viewModel.eliminar(registro) }
-                )
+        } else {
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(16.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                item {
+                    Text(
+                        text = "${registros.size} registros · $pendientes por contactar",
+                        style = MaterialTheme.typography.titleMedium,
+                        fontWeight = FontWeight.Bold
+                    )
+                }
+                items(registros, key = { it.id }) { registro ->
+                    TarjetaRegistro(
+                        registro = registro,
+                        onCambiarContactado = { viewModel.cambiarContactado(registro) },
+                        onEliminar = { viewModel.eliminar(registro) }
+                    )
+                }
             }
         }
     }

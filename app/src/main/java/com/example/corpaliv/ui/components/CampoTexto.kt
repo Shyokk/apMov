@@ -11,6 +11,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
 
 // campo de texto del formulario: si hay error se pone rojo, muestra el icono y el mensaje
 @Composable
@@ -20,7 +22,8 @@ fun CampoTexto(
     etiqueta: String,
     error: String?,
     tipoTeclado: KeyboardType = KeyboardType.Text,
-    ayuda: String = ""
+    ayuda: String = "",
+    esClave: Boolean = false
 ) {
     OutlinedTextField(
         value = valor,
@@ -29,6 +32,8 @@ fun CampoTexto(
         modifier = Modifier.fillMaxWidth(),
         singleLine = true,
         keyboardOptions = KeyboardOptions(keyboardType = tipoTeclado),
+        // si es clave se muestran puntitos en vez de las letras
+        visualTransformation = if (esClave) PasswordVisualTransformation() else VisualTransformation.None,
         isError = error != null,
         trailingIcon = {
             if (error != null) {
