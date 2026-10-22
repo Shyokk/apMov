@@ -1,5 +1,6 @@
 package com.example.corpaliv.ui.components
 
+import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box
@@ -34,21 +35,29 @@ fun ImagenLogo(
             .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(16.dp)),
         contentAlignment = Alignment.Center
     ) {
-        if (imagen != null) {
-            AsyncImage(
-                model = imagen,
-                contentDescription = "Imagen adjunta",
-                modifier = Modifier.fillMaxSize(),
-                // Crop recorta la imagen para llenar el cuadro sin deformarla
-                contentScale = ContentScale.Crop
-            )
-        } else {
-            Icon(
-                imageVector = Icons.Filled.Image,
-                contentDescription = "Sin imagen",
-                tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                modifier = Modifier.size(tamano / 2)
-            )
+        // Crossfade hace que la imagen nueva aparezca suave sobre la anterior
+        Crossfade(targetState = imagen, label = "Cambio de imagen") { imagenActual ->
+            if (imagenActual != null) {
+                AsyncImage(
+                    model = imagenActual,
+                    contentDescription = "Imagen adjunta",
+                    modifier = Modifier.fillMaxSize(),
+                    // Crop recorta la imagen para llenar el cuadro sin deformarla
+                    contentScale = ContentScale.Crop
+                )
+            } else {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Image,
+                        contentDescription = "Sin imagen",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(tamano / 2)
+                    )
+                }
+            }
         }
     }
 }

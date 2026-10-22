@@ -12,6 +12,7 @@ import com.example.corpaliv.repository.UsuarioRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class LoginViewModel(application: Application) : AndroidViewModel(application) {
@@ -33,6 +34,10 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
     // nombre de quien inicio sesion; si es null no hay sesion
     private val _usuarioActual = MutableStateFlow<String?>(null)
     val usuarioActual: StateFlow<String?> = _usuarioActual.asStateFlow()
+
+    // true mientras se consulta la base de datos (se muestra una ruedita)
+    private val _cargando = MutableStateFlow(false)
+    val cargando: StateFlow<Boolean> = _cargando.asStateFlow()
 
     // mensaje verde, ej: cuenta creada
     private val _mensaje = MutableStateFlow<String?>(null)
@@ -121,6 +126,9 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
 
         // la base de datos se usa dentro de una corrutina para no trabar la pantalla
         viewModelScope.launch {
+            _cargando.value = true
+            // pequeña pausa para que se alcance a ver la ruedita (como el delay de MiAppEstado)
+            delay(600)
             val usuario = repository.buscarPorCorreo(correo)
             if (_esRegistro.value) {
                 if (usuario != null) {
@@ -147,6 +155,7 @@ class LoginViewModel(application: Application) : AndroidViewModel(application) {
                     _mensaje.value = null
                 }
             }
+            _cargando.value = false
         }
     }
 

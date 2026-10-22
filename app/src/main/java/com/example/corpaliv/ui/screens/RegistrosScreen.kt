@@ -1,5 +1,6 @@
 package com.example.corpaliv.ui.screens
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -119,14 +120,19 @@ fun TarjetaRegistro(
     onCambiarContactado: () -> Unit,
     onEliminar: () -> Unit
 ) {
+    // el color cambia con animacion cuando se marca como contactado (animateColorAsState como en MiAppEstado)
+    val colorTarjeta by animateColorAsState(
+        targetValue = if (registro.contactado) {
+            MaterialTheme.colorScheme.secondaryContainer
+        } else {
+            MaterialTheme.colorScheme.surface
+        },
+        label = "Color de la tarjeta"
+    )
     Card(
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(
-            containerColor = if (registro.contactado) {
-                MaterialTheme.colorScheme.secondaryContainer
-            } else {
-                MaterialTheme.colorScheme.surface
-            }
+            containerColor = colorTarjeta
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {

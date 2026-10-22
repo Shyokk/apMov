@@ -1,5 +1,10 @@
 package com.example.corpaliv.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -17,6 +22,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -45,6 +51,7 @@ fun LoginScreen(
     val errores by viewModel.errores.collectAsState()
     val esRegistro by viewModel.esRegistro.collectAsState()
     val mensaje by viewModel.mensaje.collectAsState()
+    val cargando by viewModel.cargando.collectAsState()
 
     Column(
         modifier = modifier
@@ -73,7 +80,12 @@ fun LoginScreen(
         )
         Spacer(modifier = Modifier.height(12.dp))
 
-        if (mensaje != null) {
+        // el mensaje verde aparece con animacion
+        AnimatedVisibility(
+            visible = mensaje != null,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -92,7 +104,6 @@ fun LoginScreen(
                     Text(text = mensaje ?: "", fontWeight = FontWeight.SemiBold)
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
         }
 
         // el nombre solo se pide al crear cuenta
@@ -136,11 +147,20 @@ fun LoginScreen(
 
         Button(
             onClick = { viewModel.continuar() },
+            // mientras carga el boton no se puede tocar de nuevo
+            enabled = !cargando,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(52.dp)
         ) {
-            Text(if (esRegistro) "Crear cuenta" else "Iniciar sesión")
+            if (cargando) {
+                CircularProgressIndicator(
+                    modifier = Modifier.size(24.dp),
+                    strokeWidth = 3.dp
+                )
+            } else {
+                Text(if (esRegistro) "Crear cuenta" else "Iniciar sesión")
+            }
         }
         TextButton(onClick = { viewModel.cambiarModo() }) {
             Text(if (esRegistro) "¿Ya tienes cuenta? Inicia sesión" else "¿No tienes cuenta? Créala aquí")

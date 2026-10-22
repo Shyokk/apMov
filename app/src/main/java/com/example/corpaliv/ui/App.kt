@@ -1,5 +1,10 @@
 package com.example.corpaliv.ui
 
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
@@ -53,22 +58,29 @@ fun App(
             val modifier = Modifier.padding(innerPadding)
             // el boton "Quiero colaborar" de las pantallas lleva al formulario
             val irAColaborar = { pantallaActual = "Quiero colaborar" }
-            when (pantallaActual) {
-                "Inicio" -> InicioScreen(modifier, irAColaborar)
-                "Programas" -> ProgramasScreen(modifier, irAColaborar)
-                "Productos" -> ProductosScreen(modifier, irAColaborar)
-                "Casos de éxito" -> CasosScreen(modifier, irAColaborar)
-                "Quiero colaborar" -> ColaborarScreen(modifier)
-                // los registros solo los ve el equipo: si no hay sesion se muestra el login
-                "Registros" -> {
-                    if (usuarioActual == null) {
-                        LoginScreen(modifier, loginViewModel)
-                    } else {
-                        RegistrosScreen(
-                            modifier = modifier,
-                            nombreUsuario = usuarioActual ?: "",
-                            onCerrarSesion = { loginViewModel.cerrarSesion() }
-                        )
+            // al cambiar de pantalla la nueva aparece con un fundido (fade)
+            AnimatedContent(
+                targetState = pantallaActual,
+                transitionSpec = { fadeIn(tween(300)) togetherWith fadeOut(tween(300)) },
+                label = "Cambio de pantalla"
+            ) { pantalla ->
+                when (pantalla) {
+                    "Inicio" -> InicioScreen(modifier, irAColaborar)
+                    "Programas" -> ProgramasScreen(modifier, irAColaborar)
+                    "Productos" -> ProductosScreen(modifier, irAColaborar)
+                    "Casos de éxito" -> CasosScreen(modifier, irAColaborar)
+                    "Quiero colaborar" -> ColaborarScreen(modifier)
+                    // los registros solo los ve el equipo: si no hay sesion se muestra el login
+                    "Registros" -> {
+                        if (usuarioActual == null) {
+                            LoginScreen(modifier, loginViewModel)
+                        } else {
+                            RegistrosScreen(
+                                modifier = modifier,
+                                nombreUsuario = usuarioActual ?: "",
+                                onCerrarSesion = { loginViewModel.cerrarSesion() }
+                            )
+                        }
                     }
                 }
             }

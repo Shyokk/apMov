@@ -1,5 +1,10 @@
 package com.example.corpaliv.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,6 +40,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -52,6 +58,7 @@ import com.example.corpaliv.ui.components.SelectorImagen
 import com.example.corpaliv.ui.components.formatearFecha
 import com.example.corpaliv.viewmodel.ColaborarViewModel
 import com.example.corpaliv.viewmodel.RegistrosViewModel
+import kotlinx.coroutines.delay
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -63,6 +70,14 @@ fun ColaborarScreen(
     val formulario by viewModel.formulario.collectAsState()
     val errores by viewModel.errores.collectAsState()
     val enviado by viewModel.enviado.collectAsState()
+
+    // despues de 4 segundos se esconde el mensaje de exito (igual que en MiAppEstado)
+    LaunchedEffect(enviado) {
+        if (enviado) {
+            delay(4000)
+            viewModel.ocultarMensajeEnviado()
+        }
+    }
 
     var mostrarCalendario by remember { mutableStateOf(false) }
     var tipoAbierto by remember { mutableStateOf(false) }
@@ -87,8 +102,12 @@ fun ColaborarScreen(
         )
         Spacer(modifier = Modifier.height(8.dp))
 
-        // mensaje cuando se envio bien
-        if (enviado) {
+        // mensaje cuando se envio bien: entra con animacion
+        AnimatedVisibility(
+            visible = enviado,
+            enter = fadeIn() + expandVertically(),
+            exit = fadeOut() + shrinkVertically()
+        ) {
             Card(
                 colors = CardDefaults.cardColors(
                     containerColor = MaterialTheme.colorScheme.secondaryContainer
@@ -110,7 +129,6 @@ fun ColaborarScreen(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(8.dp))
         }
 
         CampoTexto(

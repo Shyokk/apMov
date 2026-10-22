@@ -1,5 +1,10 @@
 package com.example.corpaliv.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
@@ -17,7 +22,12 @@ import androidx.compose.ui.unit.dp
 // mensaje de error con icono para los campos que no son de texto (checkbox, fecha, tipo)
 @Composable
 fun MensajeError(error: String?) {
-    if (error != null) {
+    // el error aparece y desaparece suave (como los mensajes de MiAppEstado)
+    AnimatedVisibility(
+        visible = error != null,
+        enter = fadeIn() + expandVertically(),
+        exit = fadeOut() + shrinkVertically()
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 imageVector = Icons.Filled.Warning,
@@ -27,7 +37,7 @@ fun MensajeError(error: String?) {
             )
             Spacer(modifier = Modifier.width(6.dp))
             Text(
-                text = error,
+                text = error ?: "",
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall
             )
