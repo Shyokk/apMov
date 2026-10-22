@@ -7,8 +7,8 @@ import androidx.room.RoomDatabase
 import com.example.corpaliv.model.Registro
 import com.example.corpaliv.model.Usuario
 
-// version 2 porque se agrego la tabla usuarios
-@Database(entities = [Registro::class, Usuario::class], version = 2, exportSchema = false)
+// version 3: la 2 agrego la tabla usuarios y la 3 la columna imagenRuta en registros
+@Database(entities = [Registro::class, Usuario::class], version = 3, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun registroDao(): RegistroDao

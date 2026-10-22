@@ -33,8 +33,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.corpaliv.model.Registro
+import com.example.corpaliv.ui.components.ImagenLogo
 import com.example.corpaliv.ui.components.formatearFecha
 import com.example.corpaliv.viewmodel.RegistrosViewModel
+import java.io.File
 
 // pantalla para el equipo de vinculacion: ve, marca y borra los registros guardados en Room
 @Composable
@@ -129,12 +131,19 @@ fun TarjetaRegistro(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(
-                text = registro.nombre,
-                style = MaterialTheme.typography.titleMedium,
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
-            )
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                // si adjunto imagen se muestra chica y redondeada
+                if (registro.imagenRuta != null) {
+                    ImagenLogo(imagen = File(registro.imagenRuta), tamano = 56.dp)
+                    Spacer(modifier = Modifier.width(12.dp))
+                }
+                Text(
+                    text = registro.nombre,
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
             Text("Quiere colaborar con: ${registro.tipo}")
             if (registro.monto > 0) {
                 Text("Monto aproximado: $${registro.monto}")

@@ -16,5 +16,7 @@ data class Registro(
     val mensaje: String = "",
     val recibirNovedades: Boolean = false,
     val contactado: Boolean = false,
+    // ruta del archivo de la imagen dentro de la app (null si no adjunto imagen)
+    val imagenRuta: String? = null,
     val creadoEn: Long = System.currentTimeMillis()
 )
