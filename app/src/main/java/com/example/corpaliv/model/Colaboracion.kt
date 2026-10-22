@@ -10,5 +10,7 @@ data class Colaboracion(
     val fecha: Long? = null,
     val mensaje: String = "",
     val aceptaTerminos: Boolean = false,
-    val recibirNovedades: Boolean = false
+    val recibirNovedades: Boolean = false,
+    // foto o logo elegido con la camara o la galeria (opcional)
+    val imagenUri: String? = null
 )

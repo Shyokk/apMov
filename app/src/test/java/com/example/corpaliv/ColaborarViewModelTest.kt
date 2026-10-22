@@ -97,4 +97,12 @@ class ColaborarViewModelTest {
         viewModel.actualizarNombre("Empresa Ejemplo")
         assertNull(viewModel.errores.value.nombre)
     }
+
+    @Test
+    fun laImagenEsOpcionalYSeEnviaConLosDatos() {
+        val viewModel = formularioValido()
+        viewModel.actualizarImagen("content://ejemplo/logo.jpg")
+        val datos = viewModel.enviar()
+        assertEquals("content://ejemplo/logo.jpg", datos?.imagenUri)
+    }
 }

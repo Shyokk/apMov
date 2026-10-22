@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.corpaliv.ui.components.CampoTexto
 import com.example.corpaliv.ui.components.MensajeError
+import com.example.corpaliv.ui.components.SelectorImagen
 import com.example.corpaliv.ui.components.formatearFecha
 import com.example.corpaliv.viewmodel.ColaborarViewModel
 import com.example.corpaliv.viewmodel.RegistrosViewModel
@@ -192,6 +193,12 @@ fun ColaborarScreen(
             )
         }
         MensajeError(errores.fecha)
+
+        // recursos nativos: camara y galeria
+        SelectorImagen(
+            imagenUri = formulario.imagenUri,
+            onImagenElegida = { viewModel.actualizarImagen(it) }
+        )
 
         CampoTextoMensaje(
             valor = formulario.mensaje,

@@ -76,6 +76,10 @@ class ColaborarViewModel : ViewModel() {
         _formulario.value = _formulario.value.copy(recibirNovedades = valor)
     }
 
+    fun actualizarImagen(valor: String?) {
+        _formulario.value = _formulario.value.copy(imagenUri = valor)
+    }
+
     // el monto solo se pide si la persona va a donar o comprar
     fun pideMonto(): Boolean {
         val tipo = _formulario.value.tipo
